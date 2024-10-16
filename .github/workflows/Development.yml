@@ -31,19 +31,19 @@ jobs:
         with:
           python-version: '3.10'
 
-      # - name: Install SNOW CLI Python packages
-      #   run: pip install snowflake-cli
+      - name: Install SNOW CLI Python packages
+        run: pip install snowflake-cli
 
       
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: echo Hello, world!
 
-      # Snowflake CLI installation
-      - uses: Snowflake-Labs/snowflake-cli-action@v1
-        with:
-          cli-version: "latest"
-          default-config-file-path: "config.toml"
+      # # Snowflake CLI installation
+      # - uses: Snowflake-Labs/snowflake-cli-action@v1
+      #   with:
+      #     cli-version: "latest"
+      #     default-config-file-path: "config.toml"
         
       # Use the CLI
       - name: Test version
@@ -61,6 +61,6 @@ jobs:
           SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
           SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE}}
         run: |
-          snow connection test
+          snow connection test --connection="myconnection"
           snow sql -q "ALTER GIT REPOSITORY PRD_SMNTC_LAYER.PUBLIC.CI_CD_GIT_REPO FETCH" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE
           # snow sql -q "EXECUTE IMMEDIATE FROM @quickstart_common.public.quickstart_repo/branches/main/deploy_parameterized_pipeline.sql USING (environment => 'prod', retention_time => 1)" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE
