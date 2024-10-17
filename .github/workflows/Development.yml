@@ -42,7 +42,7 @@ jobs:
       - name: Install Python packages
         run: pip install -r requirements.txt
       
-          - name: Install SNOW CLI Python packages
+      - name: Install SNOW CLI Python packages
         run: pipx install snowflake-cli
       # Install Snowflake CLI GitHub Action and point to config file
       # - uses: Snowflake-Labs/snowflake-cli-action@v1
