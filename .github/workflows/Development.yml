@@ -101,6 +101,7 @@ jobs:
           SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
           SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE}}
         run: |
-            snow sql -q "select * from PRD_SMNTC_LAYER.CI_CD.CONFIG" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --password $SNOWFLAKE_PASSWORD --database "PRD_SMNTC_LAYER"# snow --config-file="C:\SourceCode\Private_Git\CI_CD\config.toml"  connection test --connection Dummy
+            snow sql -q "select * from PRD_SMNTC_LAYER.CI_CD.CONFIG" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --password $SNOWFLAKE_PASSWORD --database "PRD_SMNTC_LAYER"
+            # snow --config-file="C:\SourceCode\Private_Git\CI_CD\config.toml"  connection test --connection Dummy
             # snow sql -q "ALTER GIT REPOSITORY PRD_SMNTC_LAYER.PUBLIC.CI_CD_GIT_REPO FETCH" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE
             # snow sql -q "EXECUTE IMMEDIATE FROM @quickstart_common.public.quickstart_repo/branches/main/deploy_parameterized_pipeline.sql USING (environment => 'prod', retention_time => 1)" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE
