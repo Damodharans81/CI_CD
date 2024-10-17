@@ -93,37 +93,14 @@ jobs:
           echo Add other actions to build,
           echo test, and deploy your project.
 
-        # It would be nice to get rid of this step entirely once SnowCLI supports using only env variables
-      - name: Configure SnowCLI
+      - name: Deploy data pipeline
         env:
-          SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE}}
         run: |
-          cd $GITHUB_WORKSPACE
-          echo "[connections]" > config.toml
-          echo "[connections.dev]" >> config.toml
-          echo "account = \"$SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT\"" >> config.toml
-
-          - name: Deploy demo objects
-          env:
-            SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-            SNOWFLAKE_CONNECTIONS_DEV_USER: ${{ secrets.SNOWFLAKE_USER }}
-            SNOWFLAKE_CONNECTIONS_DEV_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
-            SNOWFLAKE_CONNECTIONS_DEV_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
-            SNOWFLAKE_CONNECTIONS_DEV_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
-            SNOWFLAKE_CONNECTIONS_DEV_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
-            SNOWFLAKE_CONNECTIONS_DEV_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
-          run: |
-            snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "ALTER GIT REPOSITORY DEMO_REPO FETCH"
-            snow sql -q "Select 234" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE
-        #       
-        # - name: Deploy data pipeline
-        #   # env:
-        #   #   SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-        #   #   SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
-        #   #   SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
-        #   #   SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
-        #   #   SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE}}
-        #   run: |
-        #     snow --config-file="C:\SourceCode\Private_Git\CI_CD\config.toml"  connection test --connection Dummy
-        #     # snow sql -q "ALTER GIT REPOSITORY PRD_SMNTC_LAYER.PUBLIC.CI_CD_GIT_REPO FETCH" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE
-        #     # snow sql -q "EXECUTE IMMEDIATE FROM @quickstart_common.public.quickstart_repo/branches/main/deploy_parameterized_pipeline.sql USING (environment => 'prod', retention_time => 1)" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE
+            snow sql -q "select * from PRD_SMNTC_LAYER.CI_CD.CONFIG" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --password $SNOWFLAKE_PASSWORD --database "PRD_SMNTC_LAYER"# snow --config-file="C:\SourceCode\Private_Git\CI_CD\config.toml"  connection test --connection Dummy
+            # snow sql -q "ALTER GIT REPOSITORY PRD_SMNTC_LAYER.PUBLIC.CI_CD_GIT_REPO FETCH" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE
+            # snow sql -q "EXECUTE IMMEDIATE FROM @quickstart_common.public.quickstart_repo/branches/main/deploy_parameterized_pipeline.sql USING (environment => 'prod', retention_time => 1)" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE
