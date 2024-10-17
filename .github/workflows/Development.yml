@@ -96,7 +96,7 @@ jobs:
         # It would be nice to get rid of this step entirely once SnowCLI supports using only env variables
       - name: Configure SnowCLI
         env:
-        SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
         run: |
           cd $GITHUB_WORKSPACE
           echo "[connections]" > config.toml
