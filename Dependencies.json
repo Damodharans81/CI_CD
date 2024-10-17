@@ -1,0 +1,34 @@
+{
+    "objects": [
+      {
+        "name": "dim_customer",
+        "type": "table",
+        "dependencies": []
+      },
+      {
+        "name": "dim_product",
+        "type": "table",
+        "dependencies": []
+      },
+      {
+        "name": "VW_fact_sales",
+        "type": "table",
+        "dependencies": ["dim_customer", "dim_product","VW_fact_sales"]
+      },
+      {
+        "name": "sp_calculate_revenue",
+        "type": "stored_procedure",
+        "dependencies": []
+      },
+      {
+        "name": "sp_update_customer_status",
+        "type": "stored_procedure",
+        "dependencies": []
+      },
+      {
+        "name": "vw_sales_summary",
+        "type": "view",
+        "dependencies": ["VW_fact_sales"]
+      }
+    ]
+  }
