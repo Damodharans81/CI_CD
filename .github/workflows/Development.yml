@@ -39,11 +39,11 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Python packages
-        run: pip install -r requirements.txt
+      # - name: Install Python packages
+      #   run: pip install -r requirements.txt
       
       - name: Install SNOW CLI Python packages
-        run: pipx install snowflake-cli
+        run: pip install snowflake-cli-labs
       # Install Snowflake CLI GitHub Action and point to config file
       # - uses: Snowflake-Labs/snowflake-cli-action@v1
       #   with:
