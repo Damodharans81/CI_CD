@@ -56,7 +56,7 @@ jobs:
         with:
           # Avoid using single or double quotes for multiline patterns
           files: |
-            **.sql
+            Scripts/**.sql
         # To compare changes between the current commit and
         # the last pushed remote commit set `since_last_remote_commit: true`. e.g
         # with:
@@ -68,7 +68,7 @@ jobs:
           content=""
           for file in ${ALL_CHANGED_FILES}; do
             echo "$file was changed"
-            content+="$file was changed"
+            content+="$file"
             content+="|"
           done
           echo "$content"
