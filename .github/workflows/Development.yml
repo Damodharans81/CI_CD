@@ -55,7 +55,9 @@ jobs:
         uses: tj-actions/changed-files@v45
         with:
           # Avoid using single or double quotes for multiline patterns
-          files: Database/*.{sql}
+          files: |
+            **.sql
+          files_ignore: CI_CD/CICD_Setup.sql
         # To compare changes between the current commit and
         # the last pushed remote commit set `since_last_remote_commit: true`. e.g
         # with:

@@ -4,7 +4,7 @@ CREATE or alter TABLE IBOR.Customer (
   last_name varchar,
   city varchar,
   state varchar,
-  phone_number varchar,
+  phone_number  varchar,
   IS_Active Bit,
   last_update_date TIMESTAMP default CURRENT_TIMESTAMP()
 );
