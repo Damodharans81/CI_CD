@@ -31,7 +31,7 @@ CREATE OR ALTER TABLE {{dbname}}.CI_CD.CHANGE_HISTORY
     INSTALLED_ON TIMESTAMP_LTZ
 );
 
-- DDL for the Sequence object
+ -- DDL for the Sequence object
 CREATE OR REPLACE SEQUENCE {{dbname}}.CI_CD.RELEASE_SEQ START = 1 INCREMENT = 1 ORDER;
 
 
