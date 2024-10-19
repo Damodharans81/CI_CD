@@ -1,4 +1,4 @@
-create or replace procedure SP_GetCustomers()
+create or replace procedure {{dbname}}.IBOR.SP_GetCustomers()
 returns table (Id number, Name varchar)
 language sql
 as
