@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      REPO_NAME: "PRD_SMNTC_LAYER.PUBLIC.CI_CD_GIT_REPO"
+      REPO_NAME: "GIT.CI_CD_GIT_REPO"
       # Read connection secrets
       SNOWFLAKE_CONNECTIONS_DEFAULT_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
       SNOWFLAKE_CONNECTIONS_DEFAULT_USER: ${{ secrets.SNOWFLAKE_USER }}
