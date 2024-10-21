@@ -109,7 +109,7 @@ jobs:
           SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
           SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
           SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE}}
-          SNOWFLAKE_DB_NAME: ${{ secrets.SNOWFLAKE_DATABASE}}
+          SNOWFLAKE_DB_NAME: "DWH_CI_CD"
           SNOWFLAKE_REPO_NAME: "GIT.CI_CD_GIT_REPO"
           SNOWFLAKE_REPO_PATH: "@CI_CD_GIT_REPO/branches/main/"
         run: |
