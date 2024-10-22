@@ -71,7 +71,7 @@ jobs:
           for file in ${ALL_CHANGED_FILES}; do
             echo "$file was changed"
             content+="$file"
-            content+="|"
+            content+=";\n"
           done
           echo "$content"
       # Runs a single command using the runners shell
@@ -89,8 +89,7 @@ jobs:
         with:
             path: Scripts/file.csv
             write-mode: overwrite            
-            contents: |
-            "${{ steps.filestats.outputs.content }}"
+            contents: "${{ steps.filestats.outputs.content }}"
             
       - name: Commit & Push
         uses: Andro999b/push@v1.3
