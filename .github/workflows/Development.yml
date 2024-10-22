@@ -63,6 +63,7 @@ jobs:
         # with:
         #   since_last_remote_commit: true 
       - name: List all changed files
+        id: stats
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
@@ -87,9 +88,9 @@ jobs:
         uses: BoundfoxStudios/action-write-file@v1
         with:
             path: Scripts/file.csv
-            write-mode: overwrite
+            write-mode: overwrite            
             contents: |
-              "$content"
+            ${{ steps.changed-files.outputs.all_changed_files }}
             
       - name: Commit & Push
         uses: Andro999b/push@v1.3
