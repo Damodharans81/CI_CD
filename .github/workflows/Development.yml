@@ -91,7 +91,7 @@ jobs:
         with:
             path: Scripts/file.csv
             write-mode: overwrite            
-            contents: ${ALL_CHANGED_FILES}
+            contents: ${{ secrets.SNOWFLAKE_ACCOUNT }}
             
       - name: Commit & Push
         uses: Andro999b/push@v1.3
