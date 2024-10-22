@@ -89,7 +89,7 @@ jobs:
         with:
             path: Scripts/file.csv
             write-mode: overwrite            
-            contents: "${{ steps.filestats.outputs.content }}"
+            contents: "TEST"
             
       - name: Commit & Push
         uses: Andro999b/push@v1.3
