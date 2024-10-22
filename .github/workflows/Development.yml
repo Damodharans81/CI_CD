@@ -63,7 +63,7 @@ jobs:
         # with:
         #   since_last_remote_commit: true 
       - name: List all changed files
-        id: stats
+        id: filestats
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
@@ -90,7 +90,7 @@ jobs:
             path: Scripts/file.csv
             write-mode: overwrite            
             contents: |
-            ${{ steps.changed-files.outputs.all_changed_files }}
+            "${{ steps.filestats.outputs.content }}"
             
       - name: Commit & Push
         uses: Andro999b/push@v1.3
