@@ -56,7 +56,7 @@ jobs:
         with:
           # Avoid using single or double quotes for multiline patterns
           files: |
-            **.sql
+            **.*
           files_ignore: CI_CD/CICD_Setup.sql
         # To compare changes between the current commit and
         # the last pushed remote commit set `since_last_remote_commit: true`. e.g
@@ -83,7 +83,22 @@ jobs:
       #     cli-version: "latest"
       #     default-config-file-path: "config.toml"
       
-      
+      - name: Overwrite file
+        uses: BoundfoxStudios/action-write-file@v1
+        with:
+            path: Scripts/file.csv
+            write-mode: overwrite
+            contents: |
+              console.log('$content')
+            
+      - name: Commit & Push
+        uses: Andro999b/push@v1.3
+        with:
+          github_token: ${{ secrets.MY_GITHUB_TOKEN }}
+          branch: main
+          force: true
+          message: 'Overwritten by Github Actions - ${date}'
+
       - name: Configure SnowCLI
         env:
           SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
