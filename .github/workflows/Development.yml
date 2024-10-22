@@ -89,7 +89,7 @@ jobs:
             path: Scripts/file.csv
             write-mode: overwrite
             contents: |
-              console.log('$content')
+              $content
             
       - name: Commit & Push
         uses: Andro999b/push@v1.3
