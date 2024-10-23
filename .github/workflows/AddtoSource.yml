@@ -48,7 +48,12 @@ jobs:
             snowflake_warehouse: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
             snowflake_username: ${{ secrets.SNOWFLAKE_USER }}
             snowflake_password: ${{ secrets.SNOWFLAKE_PASSWORD }}
-            queries: 'Select GET_DDL(''Table'', ''CI_CD.CHANGE_HISTORY'',true)'
+            SNOWSQL_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+            SNOWSQL_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+            queries: |
+                  'Use Database ${{ secrets.SNOWFLAKE_DATABASE }};
+                   Use Role ${{ secrets.SNOWFLAKE_ROLE }};
+                   Select GET_DDL(''Table'', ''CI_CD.CHANGE_HISTORY'',true)'
             # single quote is escaped with another single quote
        
       - name: Version Query Validation
