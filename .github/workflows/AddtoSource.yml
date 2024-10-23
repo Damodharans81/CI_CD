@@ -56,8 +56,8 @@ jobs:
       - name: Version Query Validation
         run: |
           echo "${{contains(steps.run_queries.outputs.queries_output, '5.20.1')}}"
-
-       - name: Overwrite file
+      
+      - name: Overwrite file
         uses: BoundfoxStudios/action-write-file@v1        
         with:
             path: Scripts/CHANGE_HISTORY.sql
