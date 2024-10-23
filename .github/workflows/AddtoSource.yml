@@ -39,3 +39,18 @@ jobs:
         run: |
           content=(~/bin/snowsql -q "Select GET_DDL('Table', 'CI_CD.CHANGE_HISTORY',true);" -o output_format=psql -o header=false -o timing=false -o friendly=false )
           echo "$content"
+      
+      - name: Run queries
+        uses: anecdotes-ai/snowflake-query@v1
+        id: run_queries
+        with:
+            snowflake_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+            snowflake_warehouse: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+            snowflake_username: ${{ secrets.SNOWFLAKE_USER }}
+            snowflake_password: ${{ secrets.SNOWFLAKE_PASSWORD }}
+            queries: 'Select GET_DDL(''Table'', ''CI_CD.CHANGE_HISTORY'',true)'
+            # single quote is escaped with another single quote
+       
+      - name: Version Query Validation
+        run: |
+          ${{contains(steps.run_queries.outputs.queries_output, '5.20.1')}}
