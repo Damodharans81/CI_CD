@@ -41,7 +41,7 @@ jobs:
           echo "$content"
       
       - name: Run queries
-        uses: anecdotes-ai/snowflake-query@v1
+        uses: anecdotes-ai/snowflake-query@v1.2
         id: run_queries
         with:
             snowflake_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
