@@ -50,9 +50,9 @@ jobs:
             snowflake_password: ${{ secrets.SNOWFLAKE_PASSWORD }}
             SNOWSQL_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
             SNOWSQL_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
-            queries: 'Select GET_DDL(''Table'', ''CI_CD.CHANGE_HISTORY'',true)'
+            queries: 'Select GET_DDL(''Table'', ''DWH_CI_CD.CI_CD.CHANGE_HISTORY'',true)'
             # single quote is escaped with another single quote
        
       - name: Version Query Validation
         run: |
-          ${{contains(steps.run_queries.outputs.queries_output, '5.20.1')}}
+          ecoh ${{contains(steps.run_queries.outputs.queries_output, '5.20.1')}}
