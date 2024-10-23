@@ -1,4 +1,4 @@
-# This is a basic workflow to help you get started with Actions
+h# This is a basic workflow to help you get started with Actions
 
 name: CI
 
@@ -55,4 +55,21 @@ jobs:
        
       - name: Version Query Validation
         run: |
-          ecoh ${{contains(steps.run_queries.outputs.queries_output, '5.20.1')}}
+          echo "${{contains(steps.run_queries.outputs.queries_output, '5.20.1')}}"
+
+       - name: Overwrite file
+        uses: BoundfoxStudios/action-write-file@v1
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+        with:
+            path: Scripts/CHANGE_HISTORY.sql
+            write-mode: overwrite            
+            contents: ${{contains(steps.run_queries.outputs.queries_output, '5.20.1')}}
+            
+      - name: Commit & Push
+        uses: Andro999b/push@v1.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          force: true
+          message: 'Overwritten by Github Actions - ${date}'   
