@@ -58,9 +58,7 @@ jobs:
           echo "${{contains(steps.run_queries.outputs.queries_output, '5.20.1')}}"
 
        - name: Overwrite file
-        uses: BoundfoxStudios/action-write-file@v1
-        env:
-          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+        uses: BoundfoxStudios/action-write-file@v1        
         with:
             path: Scripts/CHANGE_HISTORY.sql
             write-mode: overwrite            
