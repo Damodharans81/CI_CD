@@ -1,4 +1,3 @@
-"GET_DDL('TABLE', 'DWH_CI_CD.CI_CD.CHANGE_HISTORY',TRUE)"
 "create or replace TABLE DWH_CI_CD.CI_CD.CHANGE_HISTORY (
 	CHANGE_ID NUMBER(38,0) autoincrement start 1 increment 1 noorder,
 	VERSION_ID NUMBER(38,0),
