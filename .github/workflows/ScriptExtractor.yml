@@ -61,7 +61,10 @@ jobs:
           obj_type = \"'Table'\"
           obj_name = \"'DWH_CI_CD.CI_CD.CHANGE_HISTORY'\"
           query = f'Select GET_DDL({obj_type}, {obj_name},true)'
-          df = pd.read_sql(query, conn)
+          cur = conn.cursor()
+          cur.execute(query)
+          df = cur.fetch_pandas_all()
+          # df = pd.read_sql(query, conn)
           # Specify the folder path within the repository
           folder_path = 'Scripts'
           os.makedirs(folder_path, exist_ok=True)
