@@ -27,21 +27,52 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-    # Install snowsql
-      - name: Install SnowSQL
-        run: |
-          curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.9-linux_x86_64.bash
-          SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.9-linux_x86_64.bash
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Install Snowflake Connector for Python
+        run: pip install snowflake-connector-python[pandas]
+
+      - name: Run Snowflake query and write to file in specified folder
+        env:
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USERNAME }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+          SNOWFLAKE_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
         run: |
-          ~/bin/snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -r $SNOWFLAKE_ROLE -w $SNOWFLAKE_WAREHOUSE -d $SNOWFLAKE_DB_NAME -q "Select GET_DDL('Table', 'DWH_CI_CD.CI_CD.CHANGE_HISTORY',true)" -o output_file=CHANGE_HISTORY1.sql
-          
+          python -c "
+          import snowflake.connector
+          import pandas as pd
+          import os
+          # Connect to Snowflake
+          conn = snowflake.connector.connect(
+              user='${{ secrets.SNOWFLAKE_USER }}',
+              password='${{ secrets.SNOWFLAKE_PASSWORD }}',
+              account='${{ secrets.SNOWFLAKE_ACCOUNT }}',
+              warehouse='${{ secrets.SNOWFLAKE_WAREHOUSE }}',
+              database='${{ secrets.SNOWFLAKE_DATABASE }}',
+              schema='${{ secrets.SNOWFLAKE_SCHEMA }}'
+          )
+          # Execute the query
+          query = 'Select GET_DDL(''Table'', ''DWH_CI_CD.CI_CD.CHANGE_HISTORY'',true)'
+          df = pd.read_sql(query, conn)
+          # Specify the folder path within the repository
+          folder_path = 'Scripts'
+          os.makedirs(folder_path, exist_ok=True)
+          # Write to CSV, overwriting if it exists
+          file_path = os.path.join(folder_path, 'CHANGE_HISTORY.sql')
+          df.to_csv(file_path, index=False)
+          conn.close()
+          "
+
       - name: Commit and push changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add CHANGE_HISTORY1.sql
-          git commit -m "Update data file from Snowflake"
+          git add Scripts/CHANGE_HISTORY.sql
+          git commit -m "Update data file from Snowflake" || echo "No changes to commit"
           git push
