@@ -1,0 +1,105 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Get DDL from Snowflake
+
+# Controls when the workflow will run
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    env:
+      REPO_NAME: "GIT.CI_CD_GIT_REPO"
+      # Read connection secrets
+      SNOWFLAKE_CONNECTIONS_DEFAULT_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_CONNECTIONS_DEFAULT_USER: ${{ secrets.SNOWFLAKE_USER }}
+      SNOWFLAKE_CONNECTIONS_DEFAULT_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWFLAKE_CONNECTIONS_DEFAULT_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # - name: Install Python packages
+      #   run: pip install -r requirements.txt
+      
+      - name: Install SNOW CLI Python packages
+        run: pip install snowflake-cli-labs
+      # Install Snowflake CLI GitHub Action and point to config file
+      # - uses: Snowflake-Labs/snowflake-cli-action@v1
+      #   with:
+      #     cli-version: "latest"
+      #     default-config-file-path: "config.toml"
+     
+      # # Snowflake CLI installation
+      # - uses: Snowflake-Labs/snowflake-cli-action@v1
+      #   with:
+      #     cli-version: "latest"
+      #     default-config-file-path: "config.toml"
+      
+      - name: Overwrite file
+        uses: BoundfoxStudios/action-write-file@v1
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+        with:
+            path: Scripts/file.csv
+            write-mode: overwrite            
+            contents: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+            
+      - name: Commit & Push
+        uses: Andro999b/push@v1.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          force: true
+          message: 'Overwritten by Github Actions - ${date}'
+
+      - name: Configure SnowCLI
+        env:
+          SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+        run: |
+          cd $GITHUB_WORKSPACE
+          echo "[connections]" > config.toml
+          echo "[connections.dev]" >> config.toml
+          echo "account = \"$SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT\"" >> config.toml
+
+      # Use the CLI
+      - name: Test version
+        run: snow --version
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
+
+      - name: Deploy data pipeline
+        env:
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE}}
+          SNOWFLAKE_DB_NAME: "DWH_CI_CD"
+          SNOWFLAKE_REPO_NAME: "GIT.CI_CD_GIT_REPO"
+          SNOWFLAKE_REPO_PATH: "@CI_CD_GIT_REPO/branches/main/"
+        run: |
+            # snow sql -q "select * from PRD_SMNTC_LAYER.CI_CD.CONFIG" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --password $SNOWFLAKE_PASSWORD --database SNOWFLAKE_DB_NAME
+            # snow --config-file="C:\SourceCode\Private_Git\CI_CD\config.toml"  connection test --connection Dummy
+            # snow sql -q "ALTER GIT REPOSITORY PRD_SMNTC_LAYER.PUBLIC.CI_CD_GIT_REPO FETCH" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --password $SNOWFLAKE_PASSWORD --database "PRD_SMNTC_LAYER"
+            # snow sql -q "EXECUTE IMMEDIATE FROM @quickstart_common.public.quickstart_repo/branches/main/deploy_parameterized_pipeline.sql USING (environment => 'prod', retention_time => 1)" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE
+            # snow sql -q 'CALL GIT.DEPLOY_SCRIPT_New("<% database %>")' -D "database= $SNOWFLAKE_DB_NAME" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --password $SNOWFLAKE_PASSWORD --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --database $SNOWFLAKE_DB_NAME
+            ddl=(snow sql -q "Select GET_DDL('Table', 'DWH_CI_CD.CI_CD.CHANGE_HISTORY',true)" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --password $SNOWFLAKE_PASSWORD --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --database $SNOWFLAKE_DB_NAME)
+            echo "${{ ddl }}"
