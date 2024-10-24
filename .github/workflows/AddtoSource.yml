@@ -58,25 +58,25 @@ jobs:
       #       queries: 'Select GET_DDL(''Table'', ''DWH_CI_CD.CI_CD.CHANGE_HISTORY'',true)'
       #       # single quote is escaped with another single quote
 
-  promote:
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:  
-      - name: Version Query Validation
-        run: |
-          echo "${{needs.build.outputs.ddl_output}}"
+  # promote:
+  #   runs-on: ubuntu-latest
+  #   needs: [build]
+  #   steps:  
+  #     - name: Version Query Validation
+  #       run: |
+  #         echo "${{needs.build.outputs.ddl_output}}"
       
-      - name: Overwrite file
-        uses: BoundfoxStudios/action-write-file@v1        
-        with:
-            path: Scripts/CHANGE_HISTORY.sql
-            write-mode: overwrite            
-            contents: $${{needs.build.outputs.ddl_output}}
+  #     - name: Overwrite file
+  #       uses: BoundfoxStudios/action-write-file@v1        
+  #       with:
+  #           path: Scripts/CHANGE_HISTORY.sql
+  #           write-mode: overwrite            
+  #           contents: $${{needs.build.outputs.ddl_output}}
             
-      - name: Commit & Push
-        uses: Andro999b/push@v1.3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
-          force: true
-          message: 'Overwritten by Github Actions'   
+  #     - name: Commit & Push
+  #       uses: Andro999b/push@v1.3
+  #       with:
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
+  #         branch: main
+  #         force: true
+  #         message: 'Overwritten by Github Actions'   
