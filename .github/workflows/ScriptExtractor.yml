@@ -58,7 +58,7 @@ jobs:
               schema='${{ secrets.SNOWFLAKE_SCHEMA }}'
           )
           # Execute the query
-          query = 'Select GET_DDL(''Table'', ''DWH_CI_CD.CI_CD.CHANGE_HISTORY'',true)'
+          query = 'Select GET_DDL('''Table''', '''DWH_CI_CD.CI_CD.CHANGE_HISTORY''',true)'
           df = pd.read_sql(query, conn)
           # Specify the folder path within the repository
           folder_path = 'Scripts'
