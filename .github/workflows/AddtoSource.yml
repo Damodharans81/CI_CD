@@ -41,7 +41,7 @@ jobs:
       - name: Run a multi-line script
       - id: runquery
         run: |
-          ddLdef =(~/bin/snowsql -q "Select GET_DDL('Table', 'CI_CD.CHANGE_HISTORY',true);" -o output_format=json -o header=false -o timing=false -o friendly=false )
+          ddLdef=(~/bin/snowsql -q "Select GET_DDL('Table', 'CI_CD.CHANGE_HISTORY',true);" -o output_format=psql -o header=false -o timing=false -o friendly=false )
           echo "ddloutput=${ddLdef}" >> "$GITHUB_OUTPUT"
           echo "${{needs.build.outputs.ddl_output}}" 
       
