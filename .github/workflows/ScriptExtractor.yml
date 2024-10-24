@@ -70,7 +70,7 @@ jobs:
           os.makedirs(folder_path, exist_ok=True)
           # Write to CSV, overwriting if it exists
           file_path = os.path.join(folder_path, 'CHANGE_HISTORY.sql')
-          df.to_csv(file_path, index=False)
+          df.to_csv(file_path, header=False, index=False, mode='w')
           conn.close()
           "
 
