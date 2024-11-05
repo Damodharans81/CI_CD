@@ -1,0 +1,1 @@
+Create or replace View VW_Customer as Select * from Customer;
