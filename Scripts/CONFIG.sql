@@ -1,0 +1,6 @@
+create or replace TABLE {{ database }}.CI_CD.CONFIG (
+	ID NUMBER(38,0) autoincrement start 1 increment 1 noorder,
+	TYPE VARCHAR(16777216),
+	SEQ_ORDER NUMBER(38,0),
+	LASTMODIFIED_DATE TIMESTAMP_LTZ(9) DEFAULT CURRENT_TIMESTAMP()
+);
