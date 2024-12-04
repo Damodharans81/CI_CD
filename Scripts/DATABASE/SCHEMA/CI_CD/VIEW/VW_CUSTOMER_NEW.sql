@@ -1,3 +1,5 @@
+#!jinja 
+
 create or replace view {{ database }}.CI_CD.VW_CUSTOMER_NEW(
 	CUSTOMER_ID,
 	FIRST_NAME,
