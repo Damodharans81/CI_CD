@@ -5,8 +5,10 @@ name: Deploy to Snowflake
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
-  # push:
-  #   branches: [ "main" ]
+  push:
+    branches: 
+      - main
+      - 'Upload_branch_2024-11-05'
   # pull_request:
   #   branches: [ "main" ]
 
@@ -121,17 +123,23 @@ jobs:
 
       - name: Deploy data pipeline
         env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
           SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
           SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
           SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
           SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
           SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE}}
-          SNOWFLAKE_DB_NAME: "DWH_CI_CD_STAGE"
+          SNOWFLAKE_DB_NAME: "DWH_CI_CD"
+          SNOWFLAKE_TARGET_DB_NAME: "DWH_CI_CD_STAGE"
           SNOWFLAKE_REPO_NAME: "GIT.CI_CD_GIT_REPO"
-          SNOWFLAKE_REPO_PATH: "@CI_CD_GIT_REPO/branches/main/"
+          SNOWFLAKE_REPO_PATH: "@CI_CD_GIT_REPO/branches/Upload_branch_2024-11-05/"
         run: |
             # snow sql -q "select * from PRD_SMNTC_LAYER.CI_CD.CONFIG" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --password $SNOWFLAKE_PASSWORD --database SNOWFLAKE_DB_NAME
             # snow --config-file="C:\SourceCode\Private_Git\CI_CD\config.toml"  connection test --connection Dummy
             snow sql -q "ALTER GIT REPOSITORY GIT.CI_CD_GIT_REPO FETCH" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --password $SNOWFLAKE_PASSWORD --database $SNOWFLAKE_DB_NAME
             # snow sql -q "EXECUTE IMMEDIATE FROM @quickstart_common.public.quickstart_repo/branches/main/deploy_parameterized_pipeline.sql USING (environment => 'prod', retention_time => 1)" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE
             # snow sql -q 'CALL GIT.DEPLOY_SCRIPT_New("<% database %>")' -D "database= $SNOWFLAKE_DB_NAME" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --password $SNOWFLAKE_PASSWORD --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --database $SNOWFLAKE_DB_NAME
+            for file in ${ALL_CHANGED_FILES}; do
+                echo "Deploying $file......"
+                snow sql -q 'CALL GIT.DEPLOY_SCRIPT("<% branch %>","<% script %>","<% targetdatabase %>")' -D "branch= $SNOWFLAKE_REPO_PATH" -D "script= $file" -D "targetdatabase= $SNOWFLAKE_TARGET_DB_NAME" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --password $SNOWFLAKE_PASSWORD --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --database $SNOWFLAKE_DB_NAME
+            done
