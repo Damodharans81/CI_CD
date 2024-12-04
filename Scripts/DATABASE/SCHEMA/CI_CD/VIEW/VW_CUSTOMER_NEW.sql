@@ -7,6 +7,7 @@ create or replace view {{ database }}.CI_CD.VW_CUSTOMER_NEW(
 	PHONE_NO,
 	EMAIL,
 	STATE,
-	AGE
+	AGE,
+	LAST_MODIFIED_DATE
 ) as
-select * from {{ database }}.CI_CD.VW_CUSTOMER;
+SELECT * FROM {{ database }}.CI_CD.VW_CUSTOMER;
