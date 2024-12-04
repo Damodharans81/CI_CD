@@ -1,3 +1,5 @@
+#!jinja 
+
 create or replace TABLE {{ database }}.CI_CD.CUSTOMERS (
 	CUSTOMER_ID NUMBER(19,0),
 	FIRST_NAME VARCHAR(16777216),
