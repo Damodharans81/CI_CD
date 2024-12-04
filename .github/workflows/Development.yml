@@ -84,22 +84,22 @@ jobs:
       #     cli-version: "latest"
       #     default-config-file-path: "config.toml"
       
-      - name: Overwrite file
-        uses: BoundfoxStudios/action-write-file@v1
-        env:
-          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-        with:
-            path: Scripts/file.csv
-            write-mode: overwrite            
-            contents: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      # - name: Overwrite file
+      #   uses: BoundfoxStudios/action-write-file@v1
+      #   env:
+      #     ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+      #   with:
+      #       path: Scripts/file.csv
+      #       write-mode: overwrite            
+      #       contents: ${{ secrets.SNOWFLAKE_ACCOUNT }}
             
-      - name: Commit & Push
-        uses: Andro999b/push@v1.3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
-          force: true
-          message: 'Overwritten by Github Actions - ${date}'
+      # - name: Commit & Push
+      #   uses: Andro999b/push@v1.3
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     branch: main
+      #     force: true
+      #     message: 'Overwritten by Github Actions - ${date}'
 
       - name: Configure SnowCLI
         env:
@@ -126,12 +126,12 @@ jobs:
           SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
           SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
           SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE}}
-          SNOWFLAKE_DB_NAME: "DWH_CI_CD"
+          SNOWFLAKE_DB_NAME: "DWH_CI_CD_STAGE"
           SNOWFLAKE_REPO_NAME: "GIT.CI_CD_GIT_REPO"
           SNOWFLAKE_REPO_PATH: "@CI_CD_GIT_REPO/branches/main/"
         run: |
             # snow sql -q "select * from PRD_SMNTC_LAYER.CI_CD.CONFIG" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --password $SNOWFLAKE_PASSWORD --database SNOWFLAKE_DB_NAME
             # snow --config-file="C:\SourceCode\Private_Git\CI_CD\config.toml"  connection test --connection Dummy
-            # snow sql -q "ALTER GIT REPOSITORY PRD_SMNTC_LAYER.PUBLIC.CI_CD_GIT_REPO FETCH" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --password $SNOWFLAKE_PASSWORD --database "PRD_SMNTC_LAYER"
+            snow sql -q "ALTER GIT REPOSITORY GIT.CI_CD_GIT_REPO FETCH" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --password $SNOWFLAKE_PASSWORD --database $SNOWFLAKE_DB_NAME
             # snow sql -q "EXECUTE IMMEDIATE FROM @quickstart_common.public.quickstart_repo/branches/main/deploy_parameterized_pipeline.sql USING (environment => 'prod', retention_time => 1)" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE
             # snow sql -q 'CALL GIT.DEPLOY_SCRIPT_New("<% database %>")' -D "database= $SNOWFLAKE_DB_NAME" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --password $SNOWFLAKE_PASSWORD --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --database $SNOWFLAKE_DB_NAME
