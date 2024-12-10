@@ -1,8 +1,8 @@
 [connections]
 [connections.Dummy]
 account = "oz49116.eu-west-2.aws"
-user = "DAMODHARANSOUNDARARAJAN"
-password = "Simhan09#"
+user = "ANKURKUMAR"
+password = "Mahadev@2023"
 warehouse = "COMPUTE_WH"
 database = "PRD_SMNTC_LAYER"
 schema = "PUBLIC"
