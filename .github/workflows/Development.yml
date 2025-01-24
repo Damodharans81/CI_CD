@@ -157,7 +157,7 @@ jobs:
           CURRENT_REPO: ${{ steps.get-repo-name.outputs.REPO_NAME }}
           GIT_USERID:  ${{ secrets.GIT_USERID}}
           GIT_PAT: ${{ secrets.GIT_PAT}}
-          SNOWFLAKET_SCHEMA: "CI_CD"
+          SNOWFLAKE_SCHEMA: "CI_CD"
           SNOWFLAKE_TARGET_DB_NAME: "DWH_CI_CD_STAGE"
           # SNOWFLAKE_REPO_NAME: "GIT.CI_CD_GIT_REPO"
           # SNOWFLAKE_REPO_PATH: "@CI_CD_GIT_REPO/branches/Upload_branch_2024-11-05/"
