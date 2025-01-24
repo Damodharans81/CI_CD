@@ -36,6 +36,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Get branch name
+        id: get-branch-name
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "BRANCH_NAME=${{ github.head_ref }}" >> $GITHUB_OUTPUT
+          else
+            echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+
+      - name: Print branch name
+        run: |
+          echo "Branch name: ${{ steps.get-branch-name.outputs.BRANCH_NAME }}"
+        shell: bash
+
       - name: Setup Python 3.10
         uses: actions/setup-python@v4
         with:
@@ -130,10 +145,11 @@ jobs:
           SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
           SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE}}
           SNOWFLAKE_DB_NAME: "DWH_CI_CD"
-          SNOWFLAKE_GIT_SCHEMA: "GIT"
+          CURRENT_BRANCH:  ${{ steps.get-branch-name.outputs.BRANCH_NAME }}
+          # SNOWFLAKE_GIT_SCHEMA: "GIT"
           SNOWFLAKE_TARGET_DB_NAME: "DWH_CI_CD_STAGE"
-          SNOWFLAKE_REPO_NAME: "GIT.CI_CD_GIT_REPO"
-          SNOWFLAKE_REPO_PATH: "@CI_CD_GIT_REPO/branches/Upload_branch_2024-11-05/"
+          # SNOWFLAKE_REPO_NAME: "GIT.CI_CD_GIT_REPO"
+          # SNOWFLAKE_REPO_PATH: "@CI_CD_GIT_REPO/branches/Upload_branch_2024-11-05/"
         run: |
             # snow sql -q "select * from PRD_SMNTC_LAYER.CI_CD.CONFIG" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --password $SNOWFLAKE_PASSWORD --database SNOWFLAKE_DB_NAME
             # snow --config-file="C:\SourceCode\Private_Git\CI_CD\config.toml"  connection test --connection Dummy
