@@ -45,7 +45,15 @@ jobs:
             echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
           fi
         shell: bash
-
+      - name: Get Repo name
+        id: get-repo-name
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "REPO_NAME=$(echo ${{ github.repository }} | cut -d'/' -f2)" >> $GITHUB_OUTPUT
+          else
+            echo "REPO_NAME=$(echo ${{ github.repository }} | cut -d'/' -f2)" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
       - name: Print branch name
         run: |
           echo "Branch name: ${{ steps.get-branch-name.outputs.BRANCH_NAME }}"
@@ -146,6 +154,9 @@ jobs:
           SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE}}
           SNOWFLAKE_DB_NAME: "DWH_CI_CD"
           CURRENT_BRANCH:  ${{ steps.get-branch-name.outputs.BRANCH_NAME }}
+          CURRENT_REPO: ${{ steps.get-repo-name.outputs.REPO_NAME }}
+          GIT_USERID:  ${{ secrets.GIT_USERID}}
+          GIT_PAT: ${{ secrets.GIT_PAT}}
           # SNOWFLAKE_GIT_SCHEMA: "GIT"
           SNOWFLAKE_TARGET_DB_NAME: "DWH_CI_CD_STAGE"
           # SNOWFLAKE_REPO_NAME: "GIT.CI_CD_GIT_REPO"
@@ -158,5 +169,7 @@ jobs:
             # snow sql -q 'CALL GIT.DEPLOY_SCRIPT_New('<% database %>')' -D "database= $SNOWFLAKE_DB_NAME" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --password $SNOWFLAKE_PASSWORD --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --database $SNOWFLAKE_DB_NAME
             for file in ${ALL_CHANGED_FILES}; do
                 echo "Deploying $file......"
-                snow sql -q "CALL GIT.DEPLOY_SCRIPT('<% branch %>','<% script %>','<% targetdatabase %>')" -D "branch= $SNOWFLAKE_REPO_PATH" -D "script= $file" -D "targetdatabase= $SNOWFLAKE_TARGET_DB_NAME" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --password $SNOWFLAKE_PASSWORD --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --database $SNOWFLAKE_DB_NAME --schema $SNOWFLAKE_GIT_SCHEMA
+                snow sql -q "CALL CI_CD.SP_DEPLOY_SCRIPT_API(('<% user_id %>','<% pat %>','<% repo %>','<% source_branch %>','<% script_file %>','<% target_db) 
+                )" -D "user_id= $GIT_USERID" -D "pat= $GIT_PAT" -D "repo= $CURRENT_REPO" -D "source_branch= $CURRENT_BRANCH" -D "script= $file" -D "targetdatabase= $SNOWFLAKE_TARGET_DB_NAME" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --password $SNOWFLAKE_PASSWORD --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --database $SNOWFLAKE_DB_NAME --schema $SNOWFLAKE_GIT_SCHEMA
+                # snow sql -q "CALL GIT.DEPLOY_SCRIPT('<% branch %>','<% script %>','<% targetdatabase %>')" -D "branch= $SNOWFLAKE_REPO_PATH" -D "script= $file" -D "targetdatabase= $SNOWFLAKE_TARGET_DB_NAME" --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --password $SNOWFLAKE_PASSWORD --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --database $SNOWFLAKE_DB_NAME --schema $SNOWFLAKE_GIT_SCHEMA
             done
