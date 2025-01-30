@@ -1,0 +1,8 @@
+#!jinja 
+
+create or replace TABLE {{ database }}.ABOR.ADVISOR (
+	ID FLOAT,
+	NAME VARCHAR(16777216),
+	ROLE VARCHAR(16777216),
+	CREATED_AT DATE
+);
