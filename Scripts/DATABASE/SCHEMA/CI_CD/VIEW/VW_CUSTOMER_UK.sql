@@ -1,0 +1,13 @@
+#!jinja 
+
+CREATE or ALTER view {{ database }}.CI_CD.VW_CUSTOMER_UK(
+	CUSTOMER_ID,
+	FIRST_NAME,
+	LAST_NAME,
+	PHONE_NO,
+	EMAIL,
+	STATE,
+	AGE,
+	LAST_MODIFIED_DATE
+) as
+SELECT * FROM {{ database }}.CI_CD.VW_CUSTOMER;
