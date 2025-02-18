@@ -1,6 +1,6 @@
 #!jinja 
 
-create or replace TABLE {{ database }}.ABOR.CLAIMSEGMENT (
+CREATE or ALTER TABLE {{ database }}.ABOR.CLAIMSEGMENT (
 	CLAIMID NUMBER(38,0),
 	SEGMENTID NUMBER(38,0),
 	RECORD_DATE DATE
