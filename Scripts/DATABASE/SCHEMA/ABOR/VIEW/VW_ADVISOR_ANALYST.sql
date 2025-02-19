@@ -1,6 +1,6 @@
 #!jinja 
 
-CREATE or ALTER view {{ database }}.ABOR.VW_ADVISOR_ANALYST(
+create or replace view {{ database }}.ABOR.VW_ADVISOR_ANALYST(
 	ID,
 	NAME,
 	ROLE,
