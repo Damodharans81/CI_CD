@@ -1,7 +1,10 @@
-create or replace view {{ database }}.ABOR.VW_ADVISOR(
+#!jinja 
+
+CREATE or ALTER view {{ database }}.ABOR.VW_ADVISOR(
 	ID,
 	NAME,
 	ROLE,
-	CREATED_AT
+	CREATED_DATE,
+	UPDATE_BY
 ) as
 select * from {{ database }}.ABOR.Advisor;
