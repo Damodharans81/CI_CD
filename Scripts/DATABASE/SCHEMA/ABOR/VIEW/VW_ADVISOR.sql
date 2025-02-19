@@ -7,4 +7,8 @@ create or replace view {{ database }}.ABOR.VW_ADVISOR(
 	CREATED_DATE,
 	UPDATE_BY
 ) as
-select * from {{ database }}.ABOR.Advisor;
+select ID,
+	NAME,
+	ROLE,
+	CREATED_DATE,
+	UPDATE_BY from {{ database }}.ABOR.Advisor;
